@@ -1,14 +1,15 @@
 const express = require('express');
 const app = express();
+const env=require('dotenv').config()
 const mongoose = require('mongoose');
-const URI = "mongodb+srv://manvesht:jam020130@clustermv.wrduj4w.mongodb.net/?retryWrites=true&w=majority&appName=Clustermv"
+const URI = process.env.URII
 app.get('/ping', (req, res) => {
   res.send('pong');
 });
 
 app.get('/',(req,res)=>{
   mongoose.connect(URI).then(()=>{
-    res.json({status:"connect"})
+    res.json({status:"connected"})
   }).catch((err)=>{
     res.json({status:"disconnected"})
   })
