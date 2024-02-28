@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 
@@ -24,23 +23,18 @@ const Body = () => {
     fetchData();
   }, []);
 
-  // Display the first object
-  const firstObject = data.length > 0 ? data[0] : null;
-
   return (
-    <div>
-      {firstObject ? (
+    <div className="flex flex-col space-y-4">
+      {data.map((item) => (
         <Card
-          Genre={firstObject.Genre}
-          Explanation_of_Clip={firstObject.Explanation_of_Clip}
-          Links_To_the_clips={firstObject.Links_To_the_clips}
+          key={item._id}
+          Genre={item.Genre}
+          Explanation_of_Clip={item.Explanation_of_Clip}
+          Links_To_the_clips={item.Links_To_the_clips}
         />
-      ) : (
-        <p>No data available</p>
-      )}
+      ))}
     </div>
   );
 };
 
 export default Body;
-
