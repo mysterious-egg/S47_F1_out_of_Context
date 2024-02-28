@@ -1,0 +1,17 @@
+meta {
+  name: put
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:3000/items/3
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name":"Lala"
+  }
+}
