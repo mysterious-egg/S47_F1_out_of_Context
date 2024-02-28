@@ -1,46 +1,49 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+  const express = require('express');
+  const mongoClient=require('mongodb').MongoClient
+  const bodyParser = require('body-parser');
 
-const app = express();
-const PORT = 3000;
+  const app = express();
+  const PORT = 3000;
 
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-  console.log('Request Body:', req.body);
-  next();
-});
 
-let data = [
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-];
+  app.use(bodyParser.json());
+  app.use((req, res, next) => {
+    console.log('Request Body:', req.body);
+    next();
+  });
+  
 
-app.get('/items', (req, res) => {
-  res.json(data);
-});
+  let data = [
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+  ];
 
-app.post('/items', (req, res) => {
-  const newItem = req.body;
-  data.push(newItem);
-  res.status(201).json(newItem);
-});
+  app.get('/items', (req, res) => {
+    res.json(data);
+  });
 
-app.put('/items/:id', (req, res) => {
-  const itemId = parseInt(req.params.id);
-  const updatedItem = req.body;
+  app.post('/items', (req, res) => {
+    const newItem = req.body;
+    data.push(newItem);
+    res.status(201).json(newItem);
+  });
 
-  data = data.map(item => (item.id === itemId ? { ...item, ...updatedItem } : item));
+  app.put('/items/:id', (req, res) => {
+    const itemId = parseInt(req.params.id);
+    const updatedItem = req.body;
 
-  res.json({ message: 'Item updated successfully' });
-});
+    data = data.map(item => (item.id === itemId ? { ...item, ...updatedItem } : item));
 
-app.delete('/items/:id', (req, res) => {
-  const itemId = parseInt(req.params.id);
-  data = data.filter(item => item.id !== itemId);
+    res.json({ message: 'Item updated successfully' });
+  });
 
-  res.json({ message: 'Item deleted successfully' });
-});
+  app.delete('/items/:id', (req, res) => {
+    const itemId = parseInt(req.params.id);
+    data = data.filter(item => item.id !== itemId);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+    res.json({ message: 'Item deleted successfully' });
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
