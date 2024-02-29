@@ -50,21 +50,18 @@ app.post('/addEntity', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-// New route to delete an entity
 app.delete('/deleteEntity/:id', async (req, res) => {
   try {
     const entityId = req.params.id;
 
-    // Assuming 'S47_F1_out_of_context.dataset' is the name of your collection
     const collection = await mongoose.connection.collection('dataset');
 
-    // Fix: Invoke ObjectId as a constructor
     await collection.deleteOne({ _id: new mongoose.Types.ObjectId(entityId) });
 
     res.status(200).json({ message: 'Entity deleted successfully' });
   } catch (error) {
     console.error('Error deleting entity:', error);
-    res.status(500).json({ error: `Error deleting entity: ${error.message}` }); // Log the specific error message
+    res.status(500).json({ error: `Error deleting entity: ${error.message}` }); 
   }
 });
 
