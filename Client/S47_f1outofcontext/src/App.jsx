@@ -6,9 +6,9 @@ const App = () => {
   return (
     <>
     <Navbar/>
-    <div className=' flex justify-center'>
+
     <Body/>
-    </div>
+   
     
    
     </>
