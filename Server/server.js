@@ -50,6 +50,20 @@ app.post('/addEntity', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+app.delete('/deleteEntity/:id', async (req, res) => {
+  try {
+    const entityId = req.params.id;
+
+    const collection = await mongoose.connection.collection('dataset');
+
+    await collection.deleteOne({ _id: new mongoose.Types.ObjectId(entityId) });
+
+    res.status(200).json({ message: 'Entity deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting entity:', error);
+    res.status(500).json({ error: `Error deleting entity: ${error.message}` }); 
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
