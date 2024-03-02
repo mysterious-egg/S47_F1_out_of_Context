@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 
-const Body = () => {
+const ContentSpace = () => {
   const [data, setData] = useState([]);
   const [newEntity, setNewEntity] = useState({ Explanation_of_Clip: '', genre: '', Links_To_the_clips: '',created_by:'' });
 
@@ -29,7 +29,7 @@ const Body = () => {
   //       headers: {
   //         'Content-Type': 'application/json',
   //       },
-  //       body: JSON.stringify(newEntity),
+  //       ContentSpace: JSON.stringify(newEntity),
   //     });
 
   //     if (!response.ok) {
@@ -49,7 +49,7 @@ const Body = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newEntity),
+        ContentSpace: JSON.stringify(newEntity),
       });
 
       if (!response.ok) {
@@ -154,4 +154,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default ContentSpace;
