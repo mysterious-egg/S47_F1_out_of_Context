@@ -10,7 +10,10 @@ const Navbar = () => {
   };
 
   const handleLoginButtonClick = () => {
-    navigate('/login');
+    navigate('/');
+  };
+  const handlesignupButtonClick = () => {
+    navigate('/signup');
   };
 
  
@@ -40,6 +43,9 @@ const Navbar = () => {
   
               <button className="bg-green-500 text-white px-4 py-2 rounded-full" onClick={handleLoginButtonClick}>
                 Login
+              </button>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-full" onClick={handlesignupButtonClick}>
+                Sign Up
               </button>
               <button className="bg-red-500 text-white px-4 py-2 rounded-full" onClick={handleSignupButtonClick}>
                 Logout
