@@ -1,14 +1,17 @@
-
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const env = require('dotenv').config();
 const mongoose = require('mongoose');
 const URI = process.env.URII;
-const Joi = require('joi'); 
+const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 app.use(cors());
 app.use(express.json());
+const jwtSecret = process.env.JWT_SECRET;
+console.log(jwtSecret);
 
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -17,6 +20,14 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch((err) => {
     console.error('Error connecting to MongoDB:', err);
   });
+
+// Define User model
+const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
+});
+
+const User = mongoose.model('User', userSchema);
 
 app.get('/ping', (req, res) => {
   res.send('pong');
@@ -38,41 +49,71 @@ app.get('/data', async (req, res) => {
   }
 });
 
-// app.post('/addEntity', async (req, res) => {
-//   try {
-//     const schema = Joi.object({
-//       Explanation_of_Clip: Joi.string().required(),
-//       genre: Joi.string().required(),
-      
-//       created_by: Joi.string().required()
-//     });
+app.post('/signup', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-//     const { error } = schema.validate(req.body);
+    // Log the received email and password
+    console.log('Received email:', email);
+    console.log('Received password:', password);
 
-//     if (error) {
-//       return res.status(400).json({ error: error.details[0].message });
-//     }
+    // Validate the received data (add your own validation logic here)
+    
+   
 
-//     const { Explanation_of_Clip, Genre, Links_To_the_clips } = req.body.newEntity;
-//     console.log(req.body );
+    // Save the email and hashed password to MongoDB
+    const collection2 = await mongoose.connection.collection('validation');
+    await collection2.insertOne({ email, password , token});
 
-//     const collection = await mongoose.connection.collection('dataset');
+    // Generate a JWT
+    const token = jwt.sign({ email }, jwtSecret, { expiresIn: '1h' });
+  
 
-//     await collection.insertOne({ Explanation_of_Clip, Genre, Links_To_the_clips });
+    // Send the email and JWT back to the client
+    res.status(200).json({ email, token });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-//     res.status(200).json({ message: 'Entity added successfully' });
-//   } catch (error) {
-//     console.error('Error adding entity:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user in MongoDB
+    const collection3 = await mongoose.connection.collection('validation');
+    // const user = await collection3.findOne({ email });
+    const user = await collection3.findOne({ email });
+    console.log(user);
+    console.log({email,password});
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    console.log(hashedPassword);
+
+    if (!user || !(password === user.password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Generate a JWT
+    const token = jwt.sign({ email }, jwtSecret, { expiresIn: '1h' });
+
+    // Send the JWT and user data back to the client
+    res.status(200).json({ token, user });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 app.post('/addEntity', async (req, res) => {
   try {
     const schema = Joi.object({
       Explanation_of_Clip: Joi.string().required(),
       genre: Joi.string().required(),
       Links_To_the_clips: Joi.string().uri().required(),
-      created_by: Joi.string()
+      created_by: Joi.string(),
     });
 
     const { error } = schema.validate(req.body);
@@ -93,6 +134,7 @@ app.post('/addEntity', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 app.delete('/deleteEntity/:id', async (req, res) => {
   try {
     const entityId = req.params.id;
@@ -104,7 +146,7 @@ app.delete('/deleteEntity/:id', async (req, res) => {
     res.status(200).json({ message: 'Entity deleted successfully' });
   } catch (error) {
     console.error('Error deleting entity:', error);
-    res.status(500).json({ error: `Error deleting entity: ${error.message}` }); 
+    res.status(500).json({ error: `Error deleting entity: ${error.message}` });
   }
 });
 

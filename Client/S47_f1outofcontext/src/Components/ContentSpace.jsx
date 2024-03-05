@@ -49,14 +49,13 @@ const ContentSpace = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        ContentSpace: JSON.stringify(newEntity),
+        body: JSON.stringify(newEntity),
       });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      // Fetch updated data after adding the entity
       const updatedResponse = await fetch('http://localhost:3000/data');
       if (!updatedResponse.ok) {
         throw new Error('Network response was not ok');
@@ -67,7 +66,6 @@ const ContentSpace = () => {
       console.error('Error adding entity:', error);
     }
   };
-
   const handleDeleteEntity = async (id) => {
     try {
       const response = await fetch(`http://localhost:3000/deleteEntity/${id}`, {
