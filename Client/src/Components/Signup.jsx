@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+const backendUrl = import.meta.env.VITE_backend_URI
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -28,7 +28,7 @@ const Signup = () => {
 
     try {
       // Send data to the server
-      const response = await fetch('http://localhost:3000/signup', {
+      const response = await fetch(`${backendUrl}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

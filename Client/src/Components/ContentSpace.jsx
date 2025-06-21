@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
-
+const backendUrl = import.meta.env.VITE_backend_URI
 const ContentSpace = () => {
   const [data, setData] = useState([]);
   const [newEntity, setNewEntity] = useState({ Explanation_of_Clip: '', genre: '', Links_To_the_clips: '', created_by: '' });
@@ -9,7 +9,7 @@ const ContentSpace = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/data', {
+      const response = await fetch(`${backendUrl}/data`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

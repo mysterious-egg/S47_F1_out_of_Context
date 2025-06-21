@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+// const backendUrl = process.env.REACT_APP_backend_URI
+const backendUrl = import.meta.env.VITE_backend_URI
+console.log(backendUrl);
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${backendUrl}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
